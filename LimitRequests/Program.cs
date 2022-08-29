@@ -1,4 +1,7 @@
 using AspNetCoreRateLimit;
+using AspNetCoreRateLimit.Redis;
+using LimitRequests.RateLimiting;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,10 +17,13 @@ builder.Services.AddMemoryCache();
 
 builder.Services.Configure<ClientRateLimitOptions>(builder.Configuration.GetSection("ClientRateLimiting")); // Client id or API Key
 //builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting")); // Ip address
+builder.Services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect("localhost:6379"));
 
 builder.Services.AddInMemoryRateLimiting();
 
-builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+// builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>(); // deafult rate limiting
+builder.Services.AddSingleton<IRateLimitConfiguration, CustomRateLimiting>(); // custom rate limiting
+
 var app = builder.Build();
 
 app.UseClientRateLimiting();
