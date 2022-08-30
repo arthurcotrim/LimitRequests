@@ -11,23 +11,24 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddRateLimiting(builder.Configuration);
 
-builder.Services.AddOptions();
+//builder.Services.AddOptions();
 //builder.Services.AddMemoryCache();
-builder.Services.AddDistributedMemoryCache();
+//builder.Services.AddDistributedMemoryCache();
 
-builder.Services.Configure<ClientRateLimitOptions>(builder.Configuration.GetSection("ClientRateLimiting")); // Client id or API Key
+//builder.Services.Configure<ClientRateLimitOptions>(builder.Configuration.GetSection("ClientRateLimiting")); // Client id or API Key
 //builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting")); // Ip address
-builder.Services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect("localhost:6379"));
-builder.Services.AddRedisRateLimiting();
+//builder.Services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect("localhost:6379"));
+//builder.Services.AddRedisRateLimiting();
 //builder.Services.AddInMemoryRateLimiting();
 
 // builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>(); // deafult rate limiting
-builder.Services.AddSingleton<IRateLimitConfiguration, CustomRateLimiting>(); // custom rate limiting
+//builder.Services.AddSingleton<IRateLimitConfiguration, CustomRateLimiting>(); // custom rate limiting
 
 var app = builder.Build();
-
-app.UseClientRateLimiting();
+app.UseRateLimiting();
+//app.UseClientRateLimiting();
 //app.UseIpRateLimiting();
 
 // Configure the HTTP request pipeline.
